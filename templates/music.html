@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <title>MusicRecs</title>
+    <script type="text/javascript">
+
+    function testFun(user){
+        console.log("in testfun");
+        var listItems = $("li");
+        var count = 0;
+        listItems.each(function(idx, li) {
+            console.log(count);
+            count++;
+            if ($(li).attr("id") != user){
+
+                $("#" + $(this).attr("id") + "Inner").slideUp();
+            }
+            else {
+
+               $("#" + $(this).attr("id") + "Inner").slideDown();
+
+           }
+
+       });
+    }
+
+
+
+    $( document ).ready(function() {
+
+        var firstElement = $("li").first();
+        var userName = firstElement.attr("id");
+        testFun(userName);
+
+    });
+    </script>
+</head>
+<body>
+
+    <div class="container-fluid">
+       <!-- <h3 align="center">Your Personalized Music Recommendations</h3>-->
+       <div id="explainer"><p><span>MusicRecs</span> found these five users who tweet similarly to this user's handle. Based off this analysis, MusicRecs recommends to you the songs that these users have shared. Enjoy!</p></div>
+
+       
+
+            {% if src %}
+            <div class="row-fluid text-center">
+                <div class="span12 form-wrapper">
+                    <a href="{{ url_for('index') }}"><i class="icon-arrow-left"></i> enter a new Twitter handle</a>
+                </div>
+            </div>
+        </div>
+       <!-- <div align="center">
+            <iframe src={{ src }} frameborder="0" allowfullscreen style="height:300px; width=300px;">
+            </iframe>
+        </div>-->
+        <div class="center">
+            <ul id="tabs" class="nav nav-tabs">
+
+                {%for user in userList%}
+                {% if trackList[loop.index] %}
+
+                <li  id="{{user}}" onclick="testFun('{{user}}')" role="presentation"><a href="#{{user}}">{{user}}</a>
+                    <br>
+                    <div id="{{user}}Inner">
+
+                      <span class="player" style="display:inline-block" >
+                            <iframe src="https://embed.spotify.com/?uri=spotify:track:{{trackList[loop.index] }}" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+
+                        </span>
+                        <br>
+                        <div style="display:inline-block;vertical-align:top" >
+
+
+                            <h6 align="left">Similar Mentions</h6>
+                            {% for mention in mentionsList[loop.index] %}
+                            <p align="left"><strong>{{mention}}</strong></p>
+
+
+                            {% endfor %}
+                        </div>
+
+
+                        <div style="display:inline-block;vertical-align:top">
+                            <h6 align="left">Similar Hash Tags</h6>
+
+                            {% for hash in hashList[loop.index] %}
+                            <p align="left"><strong>{{hash}}</strong></p>
+
+
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+
+
+
+                </li>
+                {% endif %}
+
+                {% endfor %}
+            </ul>
+
+            <ul>
+
+                {%for string in stringsList%}
+                <li>{{string}}</li>
+
+                {% endfor %}
+            </ul>
+
+            {% elif error %}
+            <div class="row-fluid text-center">
+                <div id="error_msg" class="span12">
+                    <p class="text-error"></p>
+                    <p><a href="{{ url_for('index') }}">Try again</a></p>
+                </div>
+            </div>
+
+            {% else %}
+            <div class="row-fluid text-center">
+                <div class="span12 form-wrapper">
+                    <a href="{{ url_for('index') }}"><i class="icon-arrow-left"></i> enter a new Twitter handle</a>
+                </div>
+            </div>
+
+        </div>
+ <!--   
+
+    <div class="row-fluid text-center">
+        <div class="span12 form-wrapper">
+            <form id="user_form" class="form-inline" action="{{ url_for('articles') }}" method="POST">
+                <div class="input-append">
+                    <input id="screen_name" type="text" name="screen_name" value="{{ screen_name }}" placeholder="Enter a new Twitter handle">
+                    <button id="search" class="btn btn-success">Get News</button>
+                </div>
+            </form>
+        </div>
+    </div>  
+-->  
+
+
+<div class="row-fluid text-center">
+    <div class="span12">
+        {{url_list}}
+    </div>
+</div>
+
+
+{% endif %}
+</div>
+
+{% if url_list %}
+<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+{% endif %}
+</body>
+</html>
+

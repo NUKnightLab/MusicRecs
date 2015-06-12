@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="shortcut icon" href="http://knightlab.northwestern.edu/wp-content/themes/responsive-kl-child-theme/favicon.ico" />
+
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <title>MusicRecs</title>
+</head>
+<body>
+
+    <div class="container-fluid"><br>
+                        <h1 align="center"><a id="musicTitle"  href="{{ url_for('index') }}">MusicRecs</a></h1>
+
+       <!-- <h3 align="center">Your Personalized Music Recommendations</h3>-->
+       <div id="explainer"><p><span>MusicRecs</span> found that the following users tweet most similarly to {{screen_name}}. Based on this analysis, MusicRecs recommends the songs that these users have shared, which can be found below. Click on a user to get started!</p></div>
+
+       {% if src %}
+     <!--  <div class="row-fluid text-center">
+        <div class="span12 form-wrapper">
+            <a href="{{ url_for('index') }}"><i class="icon-arrow-left"></i> enter a new Twitter handle</a><br><br>-->
+            <!--<p> <button id="playlist" type="button" class="btn btn-info">Listen to Full Playlist</button></p><Br>
+            <div style="display: none;" id="playlistZone"><iframe src={{ src }} frameborder="0" allowfullscreen style="height:300px; width=380px;">
+            </iframe></div>
+        </div>
+    </div>-->
+    {% endif %}
+</div>
+</div>
+<div align="center">
+    <ul  class="nav nav-tabs">
+        {%for user in userList%}
+        {% if trackList[loop.index] %}
+        <li id="nav-{{loop.index}}" class="nav-item"><a href="#{{user}}">@{{user}}</a></li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+<div class="tab-content">
+    {%for user in userList%}
+    {% if trackList[loop.index] %}
+    <div class="tab-pane" id="content-{{loop.index}}" style="display: none;">
+
+        <div align="center">
+            <a target="_blank" class="follow" href="http://www.twitter.com/{{user}}" >View {{user}}'s Twitter page!</a><br><br>
+            <span class="player" style="display: block; margin: 0 auto; ">
+                <iframe src="https://embed.spotify.com/?uri=spotify:track:{{trackList[loop.index] }}" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
+            </span>
+            <br>
+            <div style="display:inline-block;vertical-align:top;text-align:center" >
+                <h6 >{{user}}'s Mentions</h6>
+                {% for mention in mentionsList[loop.index] %}
+                <p><strong>@{{mention}}</strong></p>
+                {%endfor%}
+            </div>
+            <div  style="display:inline-block;vertical-align:top;text-align:center">
+                <h6>{{user}}'s Hashtags</h6>
+                {% for hash in hashList[loop.index] %}
+                <p><strong>#{{hash}}</strong></p>
+                {%endfor%}
+            </div>
+            <!--<p> <button id="playlist" type="button" class="btn btn-info">Listen to Full Playlist</button></p><Br>
+            <div style="display: none;" id="playlistZone"><iframe src={{ src }} frameborder="0" allowfullscreen style="height:300px; width=380px;">
+            </iframe></div>-->
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+
+</div>
+
+<script type="text/javascript">
+var $active = null;
+var $contentTabs = $('.tab-pane');
+
+$('.nav-item').click(function() {
+    var id = $(this).attr('id').split('-')[1]
+    $active = $('#content-' + id);
+    for (var i = $contentTabs.length - 1; i >= 0; i--) {
+        $($contentTabs[i]).hide();
+    };
+    $active.show();
+});
+
+$("#playlist").click(function(){
+    if ($("#playlist").html() == "Hide Playlist"){
+        $("#playlistZone").hide();
+        $("#playlist").html("Listen to Full Playlist");
+    }
+    else {
+        $("#playlistZone").show();
+        $("#playlist").html("Hide Playlist");
+    }
+    
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+import elastic
+
+elastic.test()
+
